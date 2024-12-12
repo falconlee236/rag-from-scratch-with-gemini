@@ -1,5 +1,4 @@
 import bs4
-import os
 from dotenv import load_dotenv
 from langchain import hub
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -7,13 +6,9 @@ from langchain_community.document_loaders import WebBaseLoader
 from langchain_community.vectorstores import Chroma
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
-from langchain_google_vertexai import ChatVertexAI, VertexAIEmbeddings
+from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
+# from langchain_google_vertexai import ChatVertexAI, VertexAIEmbeddings
 
-# Post-processing
-def format_docs(docs):
-    return "\n\n".join(doc.page_content for doc in docs)
-
-# USER_AGENT="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
 def main():
     ''' load Documents '''
     loader = WebBaseLoader(
@@ -42,7 +37,8 @@ def main():
     # Embed
     vectorstore = Chroma.from_documents(
         documents=splits,
-        embedding=VertexAIEmbeddings(model_name="text-embedding-005")
+        embedding=GoogleGenerativeAIEmbeddings(model="models/embedding-001"),
+        # embedding=VertexAIEmbeddings(model_name="text-embedding-005")
     )
     retriever = vectorstore.as_retriever()
     
@@ -52,10 +48,14 @@ def main():
     prompt = hub.pull('rlm/rag-prompt')
     
     # LLM
-    llm = ChatVertexAI(
-        model="gemini-1.5-flash-001",
+    # llm = ChatVertexAI(
+    #     model="gemini-1.5-flash-001",
+    #     temperature=0,
+	# )
+    llm = ChatGoogleGenerativeAI(
+        model="gemini-1.5-pro",
         temperature=0,
-	)
+    )
     
     rag_chain = (
         dict( # post-processing
@@ -70,5 +70,4 @@ def main():
 if __name__ == "__main__":
     load_dotenv()
     main()
-
 
