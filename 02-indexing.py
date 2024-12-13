@@ -2,10 +2,6 @@ import tiktoken
 import dotenv
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 import numpy as np
-import bs4
-from langchain_community.document_loaders import WebBaseLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.vectorstores import Chroma
 
 def num_tokens_from_string(string: str, encoding_name: str) -> int:
     """Returns the number of tokens in a text string"""
@@ -38,38 +34,3 @@ if __name__ == "__main__":
     
     # get similaity with query and document
     print("Cosine similarity: ", cosine_similarity(query_result, document_result))
-    
-    # load blog
-    loader = WebBaseLoader(
-        web_paths=(
-            "https://lilianweng.github.io/posts/2023-06-23-agent/",
-            "https://lilianweng.github.io/posts/2023-03-15-prompt-engineering/",
-        ),
-        bs_kwargs=dict(
-            parse_only=bs4.SoupStrainer(
-                class_=("post-content", "post-title", "post-header")
-            )
-        ),
-    )
-    blog_docs = loader.load()
-    print(blog_docs)
-    
-    # split
-    text_spliter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
-        chunk_size=300,
-        chunk_overlap=50
-    )
-    
-    # make splits
-    splits = text_spliter.split_documents(blog_docs)
-    for x in splits:
-        print(x, end="\n********\n\n")
-        
-    # Vectorstores
-    vectorstore = Chroma.from_documents(
-        documents=splits,
-        embedding=GoogleGenerativeAIEmbeddings(model="models/text-embedding-004"),
-    )
-    
-    retriever = vectorstore.as_retriever()
-    print(vectorstore)
