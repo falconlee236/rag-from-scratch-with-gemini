@@ -6,6 +6,7 @@ Due to OpenAI's API pricing policy, Starter uses only 5$ credit to apply ChatGPI
 
 This policy makes me annoyed. so I find **Free** LLM API in Google [Gen AI Studio](https://aistudio.google.com/prompts/new_chat) with gemini-1.5
 
+## Get Started
 If you start langchain's rag-from-scratch tutorial with google genai stdio with free, You just create google genAi studio API keys and assign that key to `GOOGLE_API_KEY` enviroment variable
 
 ```shell
