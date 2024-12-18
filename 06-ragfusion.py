@@ -66,14 +66,18 @@ if __name__ == "__main__":
         documents=splits,
         embedding=GoogleGenerativeAIEmbeddings(model="models/text-embedding-004")
     )
-    retriever = vectorstore.as_retriever()
+    retriever = vectorstore.as_retriever(
+        search_kwargs=dict(
+            k=10, # 이러면 가장 가까운 10개만 가져옴 - default = 4
+        )
+    )
 
     question = "What is task decomposition for LLM agents?"
 
     # RAG-Fusion Related
     template = """You are a helpful assistant that generates multiple search queries based on a single input query. \n
     Generate multiple search queries related to: {question} \n
-    Output (4 queries):"""
+    Output (10 queries):"""
     prompt_rag_fusion = ChatPromptTemplate.from_template(template)
 
     generate_queries = (
@@ -86,9 +90,9 @@ if __name__ == "__main__":
     retrieval_chain_rag_fusion = generate_queries | retriever.map() | reciprocal_rank_fusion
     docs = retrieval_chain_rag_fusion.invoke({"question": question})
 
-    for doc in docs:
-        print(doc)
-        print("----")
+    # for doc in docs:
+    #     print(doc)
+    #     print("----")
     
     # RAG
     template = """Answer the following question based on this context:
