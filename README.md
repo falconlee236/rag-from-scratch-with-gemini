@@ -15,5 +15,10 @@ GOOGLE_API_KEY="your api key"
 
 And? Feel free to study rag from scratch in gemini with this example repo!!
 
+## Available Model
+* gemini-2.0-flash-exp
+* gemini-1.5-flash
+* gemini-1.5-flash-8b
+* gemini-1.5-pro 
 
 ### **I Love your star, if this repo is so much helpfullllllllll!**
