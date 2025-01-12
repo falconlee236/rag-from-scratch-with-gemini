@@ -89,10 +89,11 @@ if __name__ == "__main__":
     print(result)
     print(result.datasource)
     
-    # logical routing
+    # logical Routing
     full_chain = router | RunnableLambda(choose_route)
     print(full_chain.invoke({"question": question}))
     
+    # Semantic Routing
     chain = (
         {"query": RunnablePassthrough()}
         | RunnableLambda(prompt_router)
